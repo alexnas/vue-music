@@ -273,8 +273,8 @@
 </template>
 
 <script>
-import AppHeader from "./components/AppHeader.vue";
-import AppAuth from "./components/AppAuth.vue";
+import AppHeader from "./components/Header.vue";
+import AppAuth from "./components/Auth.vue";
 export default {
   name: "App",
   components: {
