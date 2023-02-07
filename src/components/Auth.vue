@@ -94,6 +94,7 @@
             v-if="tab === 'register'"
             :validation-schema="schema"
             @submit="register"
+            :initial-values="userData"
           >
             <!-- Name -->
             <div class="mb-3">
@@ -131,11 +132,20 @@
             <div class="mb-3">
               <label class="inline-block mb-2">Password</label>
               <vee-field
-                type="password"
                 name="password"
-                class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
-                placeholder="Password"
-              />
+                :bails="false"
+                v-slot="{ field, errors }"
+              >
+                <input
+                  type="password"
+                  class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
+                  placeholder="Password"
+                  v-bind="field"
+                />
+                <div class="text-red-600" v-for="error in errors" :key="error">
+                  {{ error }}
+                </div>
+              </vee-field>
               <ErrorMessage class="text-red-600" name="password" />
             </div>
             <!-- Confirm Password -->
@@ -201,10 +211,13 @@ export default {
         name: "required|min:3|max:25|alpha_spaces",
         email: "required|min:3|max:50|email",
         age: "required|min_value:12|max_value:150",
-        password: "required|min:5|max:25|alpha_num",
-        confirm_password: "confirmed:@password",
-        country: "required|excluded:Antarctica",
-        tos: "required",
+        password: "required|min:9|max:25|alpha_num|excluded:password",
+        confirm_password: "password_mismatch:@password",
+        country: "required|country_excluded:Antarctica",
+        tos: "tos",
+      },
+      userData: {
+        country: "USA",
       },
     };
   },
