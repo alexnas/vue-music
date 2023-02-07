@@ -90,7 +90,11 @@
             </button>
           </form>
           <!-- Registration Form -->
-          <vee-form v-if="tab === 'register'" :validation-schema="schema">
+          <vee-form
+            v-if="tab === 'register'"
+            :validation-schema="schema"
+            @submit="register"
+          >
             <!-- Name -->
             <div class="mb-3">
               <label class="inline-block mb-2">Name</label>
@@ -195,7 +199,7 @@ export default {
       tab: "login",
       schema: {
         name: "required|min:3|max:25|alpha_spaces",
-        email: "required|min:3|max:10|email",
+        email: "required|min:3|max:50|email",
         age: "required|min_value:12|max_value:150",
         password: "required|min:5|max:25|alpha_num",
         confirm_password: "confirmed:@password",
@@ -209,6 +213,11 @@ export default {
     ...mapWritableState(useModalStore, {
       modalVisibility: "isOpen",
     }),
+  },
+  methods: {
+    register(values) {
+      console.log("register function", values);
+    },
   },
 };
 </script>
