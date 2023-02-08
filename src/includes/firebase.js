@@ -1,6 +1,7 @@
 "use strict";
 import firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/firestore";
 import setup from "./.firebaseSdk.js";
 
 const firebaseConfig = {
@@ -11,6 +12,10 @@ const firebaseConfig = {
   appId: setup.FIREBASE_APP_ID,
 };
 
-console.log("firebaseConfig", firebaseConfig);
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 
-export default firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+export { auth, db };
