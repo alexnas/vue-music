@@ -26,12 +26,6 @@ export default {
 
     defineRule("required", required);
     defineRule("tos", required);
-    // defineRule("required", (value) => {
-    //   if (!value || !value.length) {
-    //     return "This field is required";
-    //   }
-    //   return true;
-    // });
     defineRule("min", min);
     defineRule("max", max);
     defineRule("alpha_spaces", alphaSpaces);
@@ -39,12 +33,6 @@ export default {
     defineRule("min_value", minVal);
     defineRule("max_value", maxVal);
     defineRule("alpha_num", alphaNum);
-    // defineRule("confirmed", (value, [target], ctx) => {
-    //   if (value === ctx.form[target]) {
-    //     return true;
-    //   }
-    //   return "Passwords must match";
-    // });
     defineRule("password_mismatch", confirmed);
     defineRule("excluded", excluded);
     defineRule("country_excluded", excluded);
