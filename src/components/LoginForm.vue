@@ -78,7 +78,7 @@ export default {
 
       this.login_alert_variant = "bg-green-500";
       this.login_alert_message = "Success! Your are now logged in.";
-      console.log("login submitted", values);
+      window.location.reload();
     },
   },
 };
