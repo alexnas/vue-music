@@ -289,9 +289,11 @@ export default {
     ...mapWritableState(useUserStore, ["userLoggedIn"]),
   },
   created() {
+    console.log(auth.currentUser);
     if (auth.currentUser) {
-      this.useUserStore = true;
+      this.userLoggedIn = true;
     }
+    console.log(this.useUserStore);
   },
 };
 </script>
