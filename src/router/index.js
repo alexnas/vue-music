@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
-import AboutView from "../views/AboutView.vue";
-import ManageView from "../views/ManageView.vue";
+import HomeView from "@/views/HomeView.vue";
+import AboutView from "@/views/AboutView.vue";
+import ManageView from "@/views/ManageView.vue";
+import useUserStore from "@/stores/user";
 
 const routes = [
   {
@@ -23,6 +24,7 @@ const routes = [
       console.log("Manage Route Guard");
       next();
     },
+    meta: { requiresAuth: true },
   },
   {
     path: "/manage",
@@ -41,8 +43,20 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  console.log("Global Guard");
-  next();
+  // console.log("Global Guard");
+
+  if (!to.meta.requiresAuth) {
+    next();
+    return;
+  }
+
+  const store = useUserStore();
+
+  if (store.userLoggedIn) {
+    next();
+  } else {
+    next({ name: "about" });
+  }
 });
 
 export default router;
