@@ -3,7 +3,7 @@
   <section class="container mx-auto mt-6">
     <div class="md:grid md:grid-cols-3 md:gap-4">
       <div class="col-span-1">
-        <upload-file></upload-file>
+        <upload-file ref="upload"></upload-file>
       </div>
       <div class="col-span-2">
         <div
@@ -138,6 +138,10 @@ import UploadFile from "@/components/UploadFile.vue";
 export default {
   name: "ManageView",
   components: { UploadFile },
+  beforeRouteLeave(to, from, next) {
+    this.$refs.upload.cancelUploads();
+    next();
+  },
   // beforeRouteEnter(to, from, next) {
   //   const store = useUserStore();
   //   if (store.userLoggedIn) {
