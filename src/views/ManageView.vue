@@ -3,7 +3,7 @@
   <section class="container mx-auto mt-6">
     <div class="md:grid md:grid-cols-3 md:gap-4">
       <div class="col-span-1">
-        <upload-file ref="upload"></upload-file>
+        <upload-file ref="upload" :addSong="addSong"></upload-file>
       </div>
       <div class="col-span-2">
         <div
@@ -43,19 +43,15 @@ export default {
   data() {
     return {
       songs: [],
+      unsavedFlag: false,
     };
-  },
-  beforeRouteLeave(to, from, next) {
-    this.$refs.upload.cancelUploads();
-    next();
   },
   async created() {
     const snapshot = await songsCollection
       .where("uid", "==", auth.currentUser.uid)
       .get();
     snapshot.forEach((document) => {
-      const song = { ...document.data(), docID: document.id };
-      this.songs.push(song);
+      this.addSong(document);
     });
   },
   methods: {
@@ -66,7 +62,16 @@ export default {
     removeSong(i) {
       this.songs.splice(i, 1);
     },
+    addSong(document) {
+      const song = { ...document.data(), docID: document.id };
+      this.songs.push(song);
+    },
   },
+
+  // beforeRouteLeave(to, from, next) {
+  //   this.$refs.upload.cancelUploads();
+  //   next();
+  // },
   // beforeRouteEnter(to, from, next) {
   //   const store = useUserStore();
   //   if (store.userLoggedIn) {
