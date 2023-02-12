@@ -1,55 +1,77 @@
 <template>
   <div class="border border-gray-200 p-3 mb-4 rounded">
     <div v-show="!showForm">
-      <h4 class="inline-block text-2xl font-bold">Song Name</h4>
+      <h4 class="inline-block text-2xl font-bold">{{ song.modified_name }}</h4>
       <button
         class="ml-1 py-1 px-2 text-sm rounded text-white bg-red-600 float-right"
+        @click.prevent="deleteSong"
       >
         <i class="fa fa-times"></i>
       </button>
       <button
         class="ml-1 py-1 px-2 text-sm rounded text-white bg-blue-600 float-right"
-        @click="showForm = !showForm"
+        @click.prevent="showForm = !showForm"
       >
         <i class="fa fa-pencil-alt"></i>
       </button>
     </div>
     <div v-show="showForm">
-      <form>
+      <div
+        class="text-white text-center font-bold p-4 rounded mb-4"
+        v-if="show_alert"
+        :class="alert_variant"
+      >
+        {{ alert_message }}
+      </div>
+      <vee-form
+        :validation-schema="updateSongSchema"
+        :initial-values="song"
+        @submit="submitUpdated"
+      >
         <div class="mb-3">
           <label class="inline-block mb-2">Song Title</label>
-          <input
+          <vee-field
+            name="modified_name"
             type="text"
             class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
             placeholder="Enter Song Title"
+            @input="updateUnsavedFlag(true)"
           />
+          <ErrorMessage class="text-red-600" name="modified_name" />
         </div>
         <div class="mb-3">
           <label class="inline-block mb-2">Genre</label>
-          <input
+          <vee-field
+            name="genre"
             type="text"
             class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
             placeholder="Enter Genre"
+            @input="updateUnsavedFlag(true)"
           />
+          <ErrorMessage class="text-red-600" name="genre" />
         </div>
         <button
           type="submit"
           class="py-1.5 px-3 rounded text-white bg-green-600"
+          :disabled="in_submission"
         >
           Submit
         </button>
         <button
           type="button"
           class="py-1.5 px-3 rounded text-white bg-gray-600"
+          @click.prevent="showForm = false"
         >
           Go Back
         </button>
-      </form>
+      </vee-form>
     </div>
   </div>
 </template>
 
 <script>
+import { songsCollection, storage } from "../includes/firebase";
+
 export default {
   name: "CompositionItem",
   props: {
@@ -57,11 +79,85 @@ export default {
       type: Object,
       required: true,
     },
+    updateSong: {
+      type: Function,
+      required: true,
+    },
+    removeSong: {
+      type: Function,
+      required: true,
+    },
+    index: {
+      type: Number,
+      required: true,
+    },
+    updateUnsavedFlag: {
+      type: Function,
+    },
   },
   data() {
     return {
       showForm: false,
+      updateSongSchema: {
+        modified_name: "required|min:3|max:50",
+        genre: "max:50|alpha_spaces",
+      },
+      in_submission: false,
+      show_alert: false,
+      alert_variant: "bg-blue-500",
+      alert_message: "Please wait! Updating song info.",
     };
+  },
+  methods: {
+    async submitUpdated(values) {
+      this.in_submission = true;
+      this.show_alert = true;
+      this.alert_variant = "bg-blue-500";
+      this.alert_message = "Please wait! Updating song info.";
+
+      try {
+        await songsCollection.doc(this.song.docID).update({
+          modified_name: values.modified_name,
+          genre: values.genre,
+        });
+      } catch (error) {
+        this.in_submission = false;
+        this.alert_variant = "bg-red-500";
+        this.alert_message = "Invalid song details.";
+        return;
+      }
+
+      this.updateSong(this.index, values);
+      this.updateUnsavedFlag(false);
+
+      this.showForm = false;
+      this.in_submission = false;
+      this.alert_variant = "bg-green-500";
+      this.alert_message = "Success! The song is updated successfully.";
+    },
+    async deleteSong() {
+      const confirmMessage = `Do you confirm deletion of the song "${this.song.modified_name}?"`;
+      if (!confirm(confirmMessage)) {
+        return;
+      }
+
+      const storageRef = storage.ref();
+      const songRef = storageRef.child(`songs/${this.song.original_name}`);
+
+      if (songRef.name === "undefined") {
+        console.log(`The song document is damaged`);
+        return;
+      }
+
+      try {
+        await songRef.delete();
+        await songsCollection.doc(this.song.docID).delete();
+      } catch (error) {
+        console.log(error);
+      }
+
+      this.removeSong(this.index);
+    },
   },
 };
 </script>
