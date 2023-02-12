@@ -22,6 +22,7 @@
               :key="song.doc"
               :song="song"
               :updateSong="updateSong"
+              :removeSong="removeSong"
               :index="i"
             />
           </div>
@@ -32,7 +33,6 @@
 </template>
 
 <script>
-// import useUserStore from "@/stores/user";
 import UploadFile from "@/components/UploadFile.vue";
 import CompositionItem from "@/components/CompositionItem.vue";
 import { songsCollection, auth } from "../includes/firebase";
@@ -62,6 +62,9 @@ export default {
     updateSong(i, values) {
       this.songs[i].modified_name = values.modified_name;
       this.songs[i].genre = values.genre;
+    },
+    removeSong(i) {
+      this.songs.splice(i, 1);
     },
   },
   // beforeRouteEnter(to, from, next) {
