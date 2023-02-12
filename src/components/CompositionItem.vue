@@ -15,6 +15,13 @@
       </button>
     </div>
     <div v-show="showForm">
+      <div
+        class="text-white text-center font-bold p-4 rounded mb-4"
+        v-if="show_alert"
+        :class="alert_variant"
+      >
+        {{ alert_message }}
+      </div>
       <vee-form
         :validation-schema="updateSongSchema"
         :initial-values="song"
@@ -44,6 +51,7 @@
         <button
           type="submit"
           class="py-1.5 px-3 rounded text-white bg-green-600"
+          :disabled="in_submission"
         >
           Submit
         </button>
@@ -60,11 +68,21 @@
 </template>
 
 <script>
+import { songsCollection } from "../includes/firebase";
+
 export default {
   name: "CompositionItem",
   props: {
     song: {
       type: Object,
+      required: true,
+    },
+    updateSong: {
+      type: Function,
+      required: true,
+    },
+    index: {
+      type: Number,
       required: true,
     },
   },
@@ -75,12 +93,37 @@ export default {
         modified_name: "required|min:3|max:50",
         genre: "max:50|alpha_spaces",
       },
+      in_submission: false,
+      show_alert: false,
+      alert_variant: "bg-blue-500",
+      alert_message: "Please wait! Updating song info.",
     };
   },
   methods: {
-    submitUpdated() {
+    async submitUpdated(values) {
+      this.in_submission = true;
+      this.show_alert = true;
+      this.alert_variant = "bg-blue-500";
+      this.alert_message = "Please wait! Updating song info.";
+
+      try {
+        await songsCollection.doc(this.song.docID).update({
+          modified_name: values.modified_name,
+          genre: values.genre,
+        });
+      } catch (error) {
+        this.in_submission = false;
+        this.alert_variant = "bg-red-500";
+        this.alert_message = "Invalid song details.";
+        return;
+      }
+
+      this.updateSong(this.index, values);
+
       this.showForm = false;
-      console.log("save Updated DATA");
+      this.in_submission = false;
+      this.alert_variant = "bg-green-500";
+      this.alert_message = "Success! The song is updated successfully.";
     },
   },
 };
