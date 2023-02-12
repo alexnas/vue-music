@@ -21,7 +21,7 @@ const routes = [
     path: "/manage-music",
     component: ManageView,
     beforeEnter: (to, from, next) => {
-      console.log("Manage Route Guard");
+      // "Manage Route Guard"
       next();
     },
     meta: { requiresAuth: true },
@@ -43,7 +43,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  // console.log("Global Guard");
+  // "Global Guard"
 
   if (!to.meta.requiresAuth) {
     next();
