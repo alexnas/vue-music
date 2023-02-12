@@ -1,7 +1,7 @@
 <template>
   <div class="border border-gray-200 p-3 mb-4 rounded">
     <div v-show="!showForm">
-      <h4 class="inline-block text-2xl font-bold">Song Name</h4>
+      <h4 class="inline-block text-2xl font-bold">{{ song.modified_name }}</h4>
       <button
         class="ml-1 py-1 px-2 text-sm rounded text-white bg-red-600 float-right"
       >
@@ -15,22 +15,31 @@
       </button>
     </div>
     <div v-show="showForm">
-      <form>
+      <vee-form
+        :validation-schema="updateSongSchema"
+        :initial-values="song"
+        @submit="submitUpdated"
+      >
         <div class="mb-3">
           <label class="inline-block mb-2">Song Title</label>
-          <input
+          <vee-field
+            name="modified_name"
             type="text"
             class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
-            placeholder="Enter Song Title"
+            placeholder="Enter Song
+          Title"
           />
+          <ErrorMessage class="text-red-600" name="modified_name" />
         </div>
         <div class="mb-3">
           <label class="inline-block mb-2">Genre</label>
-          <input
+          <vee-field
+            name="genre"
             type="text"
             class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
             placeholder="Enter Genre"
           />
+          <ErrorMessage class="text-red-600" name="genre" />
         </div>
         <button
           type="submit"
@@ -41,10 +50,11 @@
         <button
           type="button"
           class="py-1.5 px-3 rounded text-white bg-gray-600"
+          @click.prevent="showForm = false"
         >
           Go Back
         </button>
-      </form>
+      </vee-form>
     </div>
   </div>
 </template>
@@ -61,7 +71,17 @@ export default {
   data() {
     return {
       showForm: false,
+      updateSongSchema: {
+        modified_name: "required|min:3|max:50",
+        genre: "max:50|alpha_spaces",
+      },
     };
+  },
+  methods: {
+    submitUpdated() {
+      this.showForm = false;
+      console.log("save Updated DATA");
+    },
   },
 };
 </script>
