@@ -69,7 +69,6 @@ export default {
       const isBottomOfWindow =
         Math.ceil(scrollTop) + innerHeight === offsetHeight;
       if (isBottomOfWindow) {
-        console.log("Found Bottom of window");
         this.getSongs();
       }
     },
