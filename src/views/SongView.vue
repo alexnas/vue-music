@@ -8,6 +8,7 @@
     <div class="container mx-auto flex items-center">
       <!-- Play/Pause Button -->
       <button
+        @click.prevent="newSong(song)"
         type="button"
         class="z-50 h-24 w-24 text-3xl bg-white text-black rounded-full focus:outline-none"
       >
@@ -86,13 +87,10 @@
 </template>
 
 <script>
-import {
-  songsCollection,
-  auth,
-  commentsCollection,
-} from "../includes/firebase";
-import { mapState } from "pinia";
+import { mapState, mapActions } from "pinia";
+import { songsCollection, auth, commentsCollection } from "@/includes/firebase";
 import useUserStore from "@/stores/user";
+import usePlayerStore from "@/stores/player";
 
 export default {
   name: "SongView",
@@ -136,6 +134,7 @@ export default {
     this.getComments();
   },
   methods: {
+    ...mapActions(usePlayerStore, ["newSong"]),
     async addComment(value, { resetForm }) {
       console.log("add Comment", value);
       this.comment_in_submission = true;
