@@ -24,6 +24,9 @@ export default defineConfig({
           },
         ],
       },
+      workbox: {
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,json,vue,txt,woff2}"],
+      },
     }),
   ],
   resolve: {
