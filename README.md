@@ -1,10 +1,16 @@
-# music
+# VueMusic
 
-This template should help get you started developing with Vue 3 in Vite.
+Music player application.
 
-## Recommended IDE Setup
+## Used technologies
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+- Vue 3
+- Vite 4
+- Pinia
+- Firebase
+- JWT-based authorization
+- TailwindCss
+- Testing (TestUtils / Snapshots / Cypress e2e)
 
 ## Customize configuration
 
@@ -55,3 +61,7 @@ npm run test:e2e
 ```sh
 npm run lint
 ```
+
+## License
+
+Under the terms of the MIT license.
