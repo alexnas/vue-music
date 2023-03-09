@@ -2,6 +2,8 @@
 
 Music player application.
 
+See [Music player web page](https://vue-music-delta.vercel.app/).
+
 ## Used technologies
 
 - Vue 3
